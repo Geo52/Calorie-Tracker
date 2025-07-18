@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 app.set("view engine", "ejs")
-const port = 3000
+const port = process.env.PORT || 3000 // Use Render's port or 3000 locally
 
 app.use(express.urlencoded({ extended: true })) // Add body parser for form data
 
