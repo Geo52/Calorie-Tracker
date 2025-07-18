@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fat-to-fit</title>
+</head>
+<body>
+    <h2><%= Date() %></h2>
+    <form action="/add-calories" method="POST">
+        <input type="number" name="calories" min="0" required placeholder="Calories eaten">
+        <button type="submit">Add Calories</button>
+    </form>
+    <p>calories consumed today: <%= caloriesConsumed %> </p>
+</body>
+</html>
