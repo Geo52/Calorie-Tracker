@@ -2,3 +2,7 @@
 GET http://localhost:3000/
 
 ###
+POST http://localhost:3000/add-calories
+Content-Type: application/x-www-form-urlencoded
+
+calories=2

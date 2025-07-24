@@ -11,6 +11,9 @@
         <input type="number" name="calories" min="0" required placeholder="Calories eaten">
         <button type="submit">Add Calories</button>
     </form>
+    <form action="/undo-calories" method="POST">
+        <button type="submit">Undo</button>
+    </form>
     <p>calories consumed today: <%= caloriesConsumed %> </p>
 </body>
 </html>
