@@ -21,7 +21,6 @@ const pool = new Pool({
 app.use(express.urlencoded({ extended: true }))
 
 async function initCaloriesTable() {
-    await pool.query('DROP table calories')
     await pool.query(`CREATE TABLE IF NOT EXISTS calories (id SERIAL PRIMARY KEY, total INTEGER NOT NULL, date_logged  DATE DEFAULT CURRENT_DATE)`);
 }
 initCaloriesTable()
