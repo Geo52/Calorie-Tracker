@@ -21,31 +21,65 @@ const pool = new Pool({
 app.use(express.urlencoded({ extended: true }))
 
 async function initCaloriesTable() {
-    await pool.query(`CREATE TABLE IF NOT EXISTS calories (id SERIAL PRIMARY KEY, total INTEGER NOT NULL)`);
+    await pool.query(`CREATE TABLE IF NOT EXISTS calories (id SERIAL PRIMARY KEY, total INTEGER NOT NULL, date_logged  DATE DEFAULT CURRENT_DATE)`);
 }
 initCaloriesTable()
 
-// GET
+// route route
 app.get('/', async (req, res) => {
-    const result = await pool.query('SELECT SUM(total) AS total FROM calories');
+    let dateParam = req.query.date
+    let currentDate = dateParam ? new Date(dateParam) : new Date()
+    let formattedDate = currentDate.toISOString().split('T')[0]
+    
+    const result = await pool.query('SELECT SUM(total) AS total FROM calories WHERE date_logged = $1', [formattedDate]);
 
     res.render("index.ejs", {
-        caloriesConsumed: result.rows[0]?.total || 0
+        caloriesConsumed: result.rows[0]?.total || 0,
+        date:formattedDate 
     })
 })
 
-// POST
+// input/undo routes
 app.post('/add-calories', async (req, res) => {
     const calsInputed = parseInt(req.body.calories)
-    await pool.query('INSERT INTO calories (total) VALUES ($1)', [calsInputed]);
-    res.redirect('/')
+    let dateParam = req.body.date
+    let currentDate = dateParam ? new Date(dateParam) : new Date()
+    let formattedDate = currentDate.toISOString().split('T')[0]
+
+    await pool.query('INSERT INTO calories (total, date_logged) VALUES ($1, $2)', [calsInputed,formattedDate]);
+    
+    res.redirect(`/?date=${formattedDate}`);
 })
 
 app.post('/undo-calories', async (req, res) => {
-    await pool.query('DELETE FROM calories WHERE id = (SELECT id FROM calories ORDER BY id DESC LIMIT 1)');
-    res.redirect('/')
+    let dateParam = req.body.date;
+    let currentDate = dateParam ? new Date(dateParam) : new Date();
+    let formattedDate = currentDate.toISOString().split('T')[0]
+    
+    await pool.query('DELETE FROM calories WHERE id = (SELECT id FROM calories WHERE date_logged = $1 ORDER BY id DESC LIMIT 1)', [formattedDate]);
+    res.redirect(`/?date=${formattedDate}`)
 })
 
+// day routes
+app.get('/prev-day', (req, res) => {
+    let dateParam = req.query.date
+    let currentDate = dateParam ? new Date(dateParam) : new Date()
+
+    currentDate.setDate(currentDate.getDate() - 1)
+
+    res.redirect(`/?date=${currentDate.toISOString().split('T')[0]}`);
+})
+
+app.get('/next-day', (req, res) => {
+    let dateParam = req.query.date;
+    let currentDate = dateParam ? new Date(dateParam) : new Date();
+
+    currentDate.setDate(currentDate.getDate() + 1);
+
+    res.redirect(`/?date=${currentDate.toISOString().split('T')[0]}`);
+});
+
+// connection
 const port = process.env.PORT || 3000
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)

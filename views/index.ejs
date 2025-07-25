@@ -6,14 +6,30 @@
     <title>Fat-to-fit</title>
 </head>
 <body>
-    <h2><%= Date() %></h2>
+    <h2><%= date %></h2>
+
+    <!-- change days -->
+     <form action="/prev-day" method="GET">
+        <input type="hidden" name="date" value="<%= date %>">
+        <button type="submit">previous day</button>
+     </form>
+     <form action="/next-day" method="get">
+        <input type="hidden" name="date" value="<%= date %>">
+        <button type="submit">Next Day</button>
+    </form>
+
+    <!-- input cals -->
     <form action="/add-calories" method="POST">
         <input type="number" name="calories" min="0" required placeholder="Calories eaten">
+        <input type="hidden" name="date" value="<%= date %>">
         <button type="submit">Add Calories</button>
     </form>
     <form action="/undo-calories" method="POST">
+        <input type="hidden" name="date" value="<%= date %>">
         <button type="submit">Undo</button>
     </form>
+
+    <!-- display cals -->
     <p>calories consumed today: <%= caloriesConsumed %> </p>
 </body>
 </html>
