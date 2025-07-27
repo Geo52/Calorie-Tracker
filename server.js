@@ -133,16 +133,10 @@ app.post('/log-in', async (req, res) => {
         asResponse: true
     });
 
-    if (data.status >= 200 && date.status < 300) {
-        const setCookiesHeader = data.headers.get('set-cookie')
-        res.set('set-cookie', setCookiesHeader)
+    const setCookiesHeader = data.headers.get('set-cookie')
+    res.set('set-cookie', setCookiesHeader)
 
-        res.redirect('/')
-    } else {
-        res.status(401).render('login', {
-            error: 'Invalid username or password'
-        })
-    }
+    res.redirect('/')
 
 })
 
