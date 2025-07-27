@@ -17,10 +17,70 @@ app.use(express.json())
 app.all("/api/auth/{*any}", toNodeHandler(auth));
 
 
-async function initCaloriesTable() {
+async function initTables() {
+    await pool.query(`DROP TABLE IF EXISTS calories CASCADE`);
+    await pool.query(`DROP TABLE IF EXISTS "account" CASCADE`);
+    await pool.query(`DROP TABLE IF EXISTS "verification" CASCADE`);
+    await pool.query(`DROP TABLE IF EXISTS "session" CASCADE`);
+    await pool.query(`DROP TABLE IF EXISTS "user" CASCADE`);
+
     await pool.query(`CREATE TABLE IF NOT EXISTS calories (id SERIAL PRIMARY KEY, total INTEGER NOT NULL, date_logged  DATE DEFAULT CURRENT_DATE, user_id TEXT NOT NULL)`)
+
+    await pool.query(`
+    CREATE TABLE IF NOT EXISTS "user" (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      email TEXT NOT NULL UNIQUE,
+      "emailVerified" BOOLEAN NOT NULL,
+      image TEXT,
+      "createdAt" TIMESTAMP NOT NULL,
+      "updatedAt" TIMESTAMP NOT NULL
+    );
+  `);
+
+    await pool.query(`
+    CREATE TABLE IF NOT EXISTS "session" (
+      id TEXT PRIMARY KEY,
+      "userId" TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+      token TEXT NOT NULL UNIQUE,
+      "expiresAt" TIMESTAMP NOT NULL,
+      "ipAddress" TEXT,
+      "userAgent" TEXT,
+      "createdAt" TIMESTAMP NOT NULL,
+      "updatedAt" TIMESTAMP NOT NULL
+    );
+  `);
+
+    await pool.query(`
+    CREATE TABLE IF NOT EXISTS "verification" (
+      id TEXT PRIMARY KEY,
+      identifier TEXT NOT NULL,
+      value TEXT NOT NULL,
+      "expiresAt" TIMESTAMP NOT NULL,
+      "createdAt" TIMESTAMP NOT NULL,
+      "updatedAt" TIMESTAMP NOT NULL
+    );
+  `);
+
+    await pool.query(`
+    CREATE TABLE IF NOT EXISTS "account" (
+      id TEXT PRIMARY KEY,
+      "userId" TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+      "accountId" TEXT NOT NULL,
+      "providerId" TEXT NOT NULL,
+      "accessToken" TEXT,
+      "refreshToken" TEXT,
+      "accessTokenExpiresAt" TIMESTAMP,
+      "refreshTokenExpiresAt" TIMESTAMP,
+      scope TEXT,
+      "idToken" TEXT,
+      password TEXT,
+      "createdAt" TIMESTAMP NOT NULL,
+      "updatedAt" TIMESTAMP NOT NULL
+    );
+  `);
 }
-initCaloriesTable()
+initTables()
 
 async function requireAuth(req, res, next) {
     const session = await auth.api.getSession({
@@ -105,7 +165,7 @@ app.get('/', requireAuth, async (req, res) => {
     })
 })
 // input/undo routes
-app.post('/add-calories',requireAuth, async (req, res) => {
+app.post('/add-calories', requireAuth, async (req, res) => {
     const calsInputed = parseInt(req.body.calories)
     let dateParam = req.body.date
     let currentDate = dateParam ? new Date(dateParam) : new Date()
