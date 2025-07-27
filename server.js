@@ -115,7 +115,7 @@ app.post('/sign-up', async (req, res) => {
 })
 
 app.get('/log-in', (req, res) => {
-    res.render('login')
+    res.render('login', { error: null })
 })
 
 app.post('/log-in', async (req, res) => {
@@ -133,10 +133,17 @@ app.post('/log-in', async (req, res) => {
         asResponse: true
     });
 
-    const setCookiesHeader = data.headers.get('set-cookie')
-    res.set('set-cookie', setCookiesHeader)
+    if (data.status == 200) {
+        const setCookiesHeader = data.headers.get('set-cookie')
+        res.set('set-cookie', setCookiesHeader)
 
-    res.redirect('/')
+        res.redirect('/')
+    } else {
+        res.status(401).render('login', {
+            error: 'invalid username or password'
+        })
+    }
+
 })
 
 app.post('/logout', async (req, res) => {

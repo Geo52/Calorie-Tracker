@@ -8,10 +8,13 @@
 </head>
 
 <body>
+        <% if (error) { %>
+        <p style="color: red;"><%= error %></p>
+    <% } %>
     <h2>Login</h2>
     <form action="/log-in" method="POST">
         <label for="email">Email:</label>
-        <input type="text" name="email" required>
+        <input type="email" name="email" required>
 
         <label for="password">Password:</label>
         <input type="password" name="password" id="password" required>
