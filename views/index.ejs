@@ -6,7 +6,13 @@
     <title>Calorie Compass</title>
 </head>
 <body>
-    <h2><%= date %></h2>
+
+    <% let today = new  Date().toISOString().split('T')[0]%>
+    <% if (date == today){ %>
+        <h2>Today</h2>
+    <% }else{ %>
+        <h2><%= date %></h2>
+    <% } %>
     <form action="/logout" method="POST">
         <button type="submit">Sign Out</button>
     </form>
@@ -23,7 +29,7 @@
 
     <!-- input cals -->
     <form action="/add-calories" method="POST">
-        <input type="number" name="calories" min="0" required placeholder="Calories eaten">
+        <input type="number" name="calories" min="0" required placeholder="enter a specific number of calories">
         <input type="hidden" name="date" value="<%= date %>">
         <button type="submit">Add Calories</button>
     </form>

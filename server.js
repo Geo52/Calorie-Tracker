@@ -140,7 +140,7 @@ app.post('/log-in', async (req, res) => {
         res.redirect('/')
     } else {
         res.status(401).render('login', {
-            error: 'invalid username or password'
+            error: 'Invalid username or password'
         })
     }
 
