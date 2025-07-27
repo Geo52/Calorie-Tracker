@@ -18,11 +18,11 @@ app.all("/api/auth/{*any}", toNodeHandler(auth));
 
 
 async function initTables() {
-    await pool.query(`DROP TABLE IF EXISTS calories CASCADE`);
-    await pool.query(`DROP TABLE IF EXISTS "account" CASCADE`);
-    await pool.query(`DROP TABLE IF EXISTS "verification" CASCADE`);
-    await pool.query(`DROP TABLE IF EXISTS "session" CASCADE`);
-    await pool.query(`DROP TABLE IF EXISTS "user" CASCADE`);
+    // await pool.query(`DROP TABLE IF EXISTS calories CASCADE`);
+    // await pool.query(`DROP TABLE IF EXISTS "account" CASCADE`);
+    // await pool.query(`DROP TABLE IF EXISTS "verification" CASCADE`);
+    // await pool.query(`DROP TABLE IF EXISTS "session" CASCADE`);
+    // await pool.query(`DROP TABLE IF EXISTS "user" CASCADE`);
 
     await pool.query(`CREATE TABLE IF NOT EXISTS calories (id SERIAL PRIMARY KEY, total INTEGER NOT NULL, date_logged  DATE DEFAULT CURRENT_DATE, user_id TEXT NOT NULL)`)
 
@@ -176,7 +176,7 @@ app.post('/add-calories', requireAuth, async (req, res) => {
     res.redirect(`/?date=${formattedDate}`)
 })
 
-app.post('/undo-calories', async (req, res) => {
+app.post('/undo-calories', requireAuth, async (req, res) => {
     let dateParam = req.body.date
     let currentDate = dateParam ? new Date(dateParam) : new Date()
     let formattedDate = currentDate.toISOString().split('T')[0]
@@ -186,7 +186,7 @@ app.post('/undo-calories', async (req, res) => {
 })
 
 // day routes
-app.get('/prev-day', (req, res) => {
+app.get('/prev-day', requireAuth, (req, res) => {
     let dateParam = req.query.date
     let currentDate = dateParam ? new Date(dateParam) : new Date()
 
@@ -195,7 +195,7 @@ app.get('/prev-day', (req, res) => {
     res.redirect(`/?date=${currentDate.toISOString().split('T')[0]}`)
 })
 
-app.get('/next-day', (req, res) => {
+app.get('/next-day', requireAuth, (req, res) => {
     let dateParam = req.query.date
     let currentDate = dateParam ? new Date(dateParam) : new Date()
 
