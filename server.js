@@ -129,10 +129,11 @@ app.post('/log-in', async (req, res) => {
         asResponse: true
     });
 
-        const setCookiesHeader = response.headers.get('set-cookie')
-        res.set('set-cookie', setCookiesHeader)
-
-        res.redirect('/')
+    if (!response.ok) {
+        return res.render('login', { error: "invalid" })
+    }
+    res.set('set-cookie', response.headers.get('set-cookie'));
+    return res.redirect('/')
 })
 
 app.post('/logout', async (req, res) => {
