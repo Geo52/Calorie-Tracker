@@ -83,7 +83,7 @@ initTables()
 
 async function requireAuth(req, res, next) {
     const session = await auth.api.getSession({
-        headers: req.headers
+        headers: fromNodeHeaders(req.headers)
     });
 
     if (!session || !session.user) {
@@ -92,6 +92,7 @@ async function requireAuth(req, res, next) {
 
     // Add user info to request for use in routes
     req.user = session.user;
+
     next();
 }
 
@@ -173,9 +174,16 @@ app.get('/', requireAuth, async (req, res) => {
 
     const result = await pool.query('SELECT SUM(total) AS total FROM calories WHERE date_logged = $1 AND USER_ID = $2', [formattedDate, req.user.id])
 
+    const session = await auth.api.getSession({
+        headers: fromNodeHeaders(req.headers),
+    });
+    
+    let name = session.user.name
+    let upper = name.toUpperCase()
     res.render("index.ejs", {
         caloriesConsumed: result.rows[0]?.total || 0,
-        date: formattedDate
+        date: formattedDate,
+        user: upper
     })
 })
 // input/undo routes
