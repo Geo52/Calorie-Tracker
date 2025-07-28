@@ -13,7 +13,13 @@
     <% if (date == today){ %>
         <h2>Today</h2>
     <% }else{ %>
-        <h2><%= date %></h2>
+<%
+    let dateObj = new Date(date);
+    let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    let formattedDisplayDate = new Intl.DateTimeFormat('en-US', options).format(dateObj);
+%>
+<h2><%= formattedDisplayDate %></h2>
+
     <% } %>
     <form action="/logout" method="POST">
         <button type="submit">Sign Out</button>
