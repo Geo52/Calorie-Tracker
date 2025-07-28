@@ -6,8 +6,6 @@ import 'dotenv/config'
 // better auth
 import { auth, pool } from "./auth.js"
 import { toNodeHandler, fromNodeHeaders } from 'better-auth/node'
-//cors
-import cors from "cors"
 import { APIError } from 'better-auth/api'
 // ejs
 app.set("view engine", "ejs")
@@ -106,18 +104,27 @@ app.post('/sign-up', async (req, res) => {
     const { email, password, name } = req.body;
 
     try {
-        const response = await auth.api.signUpEmail({
+        await auth.api.signUpEmail({
             body: {
                 email,
                 password,
                 name,
             }
+
         })
 
-        res.redirect('/log-in')
+        const response = await auth.api.signInEmail({
+            body: { email, password },
+            headers: fromNodeHeaders(req.body),
+            asResponse: true
+        })
+
+        res.set('set-cookie', response.headers.get('set-cookie'));
+
+        res.redirect('/')
     } catch (error) {
         if (error instanceof APIError) {
-            res.render('signup',{
+            res.render('signup', {
                 error: error.message
             })
 
