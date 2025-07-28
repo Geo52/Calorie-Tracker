@@ -8,6 +8,7 @@ import { auth, pool } from "./auth.js"
 import { toNodeHandler, fromNodeHeaders } from 'better-auth/node'
 //cors
 import cors from "cors"
+import { APIError } from 'better-auth/api'
 // ejs
 app.set("view engine", "ejs")
 
@@ -121,22 +122,22 @@ app.get('/log-in', (req, res) => {
 app.post('/log-in', async (req, res) => {
     const { email, password } = req.body;
 
-    const data = await auth.api.signInEmail({
-        body: {
-            email, // required
-            password, // required
-            // rememberMe: true,
-            // callbackURL: "https://example.com/callback",
-        },
-        // This endpoint requires session cookies.
-        headers: req.headers,
+    const response = await auth.api.signInEmail({
+        body: { email, password },
+        headers: fromNodeHeaders(req.headers),
         asResponse: true
     });
 
-    const setCookiesHeader = data.headers.get('set-cookie')
-    res.set('set-cookie', setCookiesHeader)
+    if (response.ok) {
+        const setCookiesHeader = response.headers.get('set-cookie')
+        res.set('set-cookie', setCookiesHeader)
 
-    res.redirect('/')
+        res.redirect('/')
+    } else {
+        res.render('login', { error: 'Invalid username or password' })
+    }
+
+
 
 })
 
