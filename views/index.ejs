@@ -15,7 +15,7 @@
     <% }else{ %>
 <%
     let dateObj = new Date(date);
-    let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    let options = { timeZone: 'UTC',weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     let formattedDisplayDate = new Intl.DateTimeFormat('en-US', options).format(dateObj);
 %>
 <h2><%= formattedDisplayDate %></h2>
