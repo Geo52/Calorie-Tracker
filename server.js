@@ -133,7 +133,7 @@ app.post('/log-in', async (req, res) => {
         return res.render('login', { error: "invalid" })
     }
     res.set('set-cookie', response.headers.get('set-cookie'));
-    res.redirect('/')
+    return res.redirect('/')
 })
 
 app.post('/logout', async (req, res) => {
