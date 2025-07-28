@@ -99,21 +99,30 @@ async function requireAuth(req, res, next) {
 
 // user auth routes
 app.get('/sign-up', (req, res) => {
-    res.render('signup')
+    res.render('signup', { error: null })
 })
 
 app.post('/sign-up', async (req, res) => {
     const { email, password, name } = req.body;
 
-    const response = await auth.api.signUpEmail({
-        body: {
-            email,
-            password,
-            name,
-            // callbackURL: "http://localhost:3000/log-in"
+    try {
+        const response = await auth.api.signUpEmail({
+            body: {
+                email,
+                password,
+                name,
+            }
+        })
+
+        res.redirect('/log-in')
+    } catch (error) {
+        if (error instanceof APIError) {
+            res.render('signup',{
+                error: error.message
+            })
+
         }
-    })
-    res.redirect('/log-in')
+    }
 })
 
 app.get('/log-in', (req, res) => {
@@ -130,7 +139,8 @@ app.post('/log-in', async (req, res) => {
     });
 
     if (!response.ok) {
-        return res.render('login', { error: "invalid" })
+        const error = await response.json()
+        return res.render('login', { error: error.message || "asf" })
     }
     res.set('set-cookie', response.headers.get('set-cookie'));
     return res.redirect('/')
