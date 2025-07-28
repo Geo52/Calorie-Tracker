@@ -97,6 +97,7 @@ async function requireAuth(req, res, next) {
     next();
 }
 
+// user auth routes
 app.get('/sign-up', (req, res) => {
     res.render('signup')
 })
@@ -128,17 +129,10 @@ app.post('/log-in', async (req, res) => {
         asResponse: true
     });
 
-    if (response.ok) {
         const setCookiesHeader = response.headers.get('set-cookie')
         res.set('set-cookie', setCookiesHeader)
 
         res.redirect('/')
-    } else {
-        res.render('login', { error: 'Invalid username or password' })
-    }
-
-
-
 })
 
 app.post('/logout', async (req, res) => {
