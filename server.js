@@ -229,17 +229,17 @@ app.get('/search', requireAuth, (req, res) => {
     res.render('search', { food_results: 0 })
 })
 app.post('/search', requireAuth, async (req, res) => {
-    const food = req.body.food_searched_for
-    const apiKey = process.env.USDA_API_KEY
+    // const food = req.body.food_searched_for
+    // const apiKey = process.env.USDA_API_KEY
 
-    const url = `https://api.nal.usda.gov/fdc/v1/foods/search?query=${encodeURIComponent(food)}&api_key=${apiKey}`;
+    // const url = `https://api.nal.usda.gov/fdc/v1/foods/search?query=${encodeURIComponent(food)}&api_key=${apiKey}`;
 
-    const response = await fetch(url)
-    const data = await response.json()
+    // const response = await fetch(url)
+    // const data = await response.json()
 
-    res.render('search', {
-        results_for_food_searched: data.foods
-    })
+    // res.render('search', {
+    //     results_for_food_searched: data.foods
+    // })
 
 })
 
