@@ -1,5 +1,5 @@
 // express
-import express from 'express'
+import express, { response } from 'express'
 const app = express()
 // dotenv
 import 'dotenv/config'
@@ -10,8 +10,8 @@ import { APIError } from 'better-auth/api'
 // ejs
 app.set("view engine", "ejs")
 
-app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
 app.all("/api/auth/{*any}", toNodeHandler(auth));
 
@@ -177,13 +177,13 @@ app.get('/', requireAuth, async (req, res) => {
     const session = await auth.api.getSession({
         headers: fromNodeHeaders(req.headers),
     });
-    
+
     let name = session.user.name
     let upper = name.toUpperCase()
     res.render("index.ejs", {
         caloriesConsumed: result.rows[0]?.total || 0,
         date: formattedDate,
-        user: upper
+        user: upper,
     })
 })
 // input/undo routes
@@ -224,6 +224,23 @@ app.get('/next-day', requireAuth, (req, res) => {
     currentDate.setDate(currentDate.getDate() + 1)
 
     res.redirect(`/?date=${currentDate.toISOString().split('T')[0]}`)
+})
+app.get('/search', requireAuth, (req, res) => {
+    res.render('search', { food_results: 0 })
+})
+app.post('/search', requireAuth, async (req, res) => {
+    const food = req.body.food_searched_for
+    const apiKey = process.env.USDA_API_KEY
+
+    const url = `https://api.nal.usda.gov/fdc/v1/foods/search?query=${encodeURIComponent(food)}&api_key=${apiKey}`;
+
+    const response = await fetch(url)
+    const data = await response.json()
+
+    res.render('search', {
+        results_for_food_searched: data.foods
+    })
+
 })
 
 // connection

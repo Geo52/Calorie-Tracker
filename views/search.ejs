@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>search</title>
+</head>
+
+<body>
+  <form action="/search" method="POST">
+    <input type="text" name="food_searched_for" />
+    <button type="submit">search database for food</button>
+  </form>
+
+  <% if(results_for_food_searched){ %>
+    <% for(let i = 0; i < 5; i++){ %>
+        <li><%= results_for_food_searched[i].description %></li>
+    <% } %>
+  <% } %>
+</body>
+
+</html>

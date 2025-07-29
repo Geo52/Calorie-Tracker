@@ -2,7 +2,7 @@
 GET http://localhost:3000/
 
 ###
-POST http://localhost:3000/add-calories
+POST http://localhost:3000/search
 Content-Type: application/x-www-form-urlencoded
 
-calories=2
+food=asdf

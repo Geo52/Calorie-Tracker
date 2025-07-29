@@ -1,52 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calorie Compass</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calorie Compass</title>
 </head>
+
 <body>
 
 
-    <h1>Welcome, <%= user %></h1>
-    <% let today = new  Date().toISOString().split('T')[0]%>
-    <% if (date == today){ %>
-        <h2>Today</h2>
-    <% }else{ %>
-<%
+  <h1>Welcome, <%= user %></h1>
+  <% let today = new  Date().toISOString().split('T')[0]%>
+  <% if (date == today){ %>
+  <h2>Today</h2>
+  <% }else{ %>
+  <%
     let dateObj = new Date(date);
     let options = { timeZone: 'UTC',weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     let formattedDisplayDate = new Intl.DateTimeFormat('en-US', options).format(dateObj);
 %>
-<h2><%= formattedDisplayDate %></h2>
+  <h2><%= formattedDisplayDate %></h2>
 
-    <% } %>
-    <form action="/logout" method="POST">
-        <button type="submit">Sign Out</button>
-    </form>
+  <% } %>
+  <form action="/logout" method="POST">
+    <button type="submit">Sign Out</button>
+  </form>
 
-    <!-- change days -->
-     <form action="/prev-day" method="GET">
-        <input type="hidden" name="date" value="<%= date %>">
-        <button type="submit">previous day</button>
-     </form>
-     <form action="/next-day" method="get">
-        <input type="hidden" name="date" value="<%= date %>">
-        <button type="submit">Next Day</button>
-    </form>
+  <!-- change days -->
+  <form action="/prev-day" method="GET">
+    <input type="hidden" name="date" value="<%= date %>">
+    <button type="submit">previous day</button>
+  </form>
+  <form action="/next-day" method="get">
+    <input type="hidden" name="date" value="<%= date %>">
+    <button type="submit">Next Day</button>
+  </form>
 
-    <!-- input cals -->
-    <form action="/add-calories" method="POST">
-        <input type="number" name="calories" min="0" required placeholder="enter a specific number of calories">
-        <input type="hidden" name="date" value="<%= date %>">
-        <button type="submit">Add Calories</button>
-    </form>
-    <form action="/undo-calories" method="POST">
-        <input type="hidden" name="date" value="<%= date %>">
-        <button type="submit">Undo</button>
-    </form>
+  <!-- input cals -->
+  <form action="/add-calories" method="POST">
+    <input type="number" name="calories" min="0" required placeholder="enter a specific number of calories">
+    <input type="hidden" name="date" value="<%= date %>">
+    <button type="submit">Add Calories</button>
+  </form>
 
-    <!-- display cals -->
-    <p>calories consumed today: <%= caloriesConsumed %> </p>
+  <form action="/undo-calories" method="POST">
+    <input type="hidden" name="date" value="<%= date %>">
+    <button type="submit">Undo</button>
+  </form>
+
+  <a href="/search">Add Food</a>
+
+  <!-- display cals -->
+  <p>calories consumed today: <%= caloriesConsumed %> </p>
+
+
 </body>
+
 </html>
