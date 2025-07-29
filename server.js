@@ -230,15 +230,21 @@ app.get('/search', requireAuth, (req, res) => {
 })
 app.post('/search', requireAuth, async (req, res) => {
     const food = req.body.food_searched_for
-    const apiKey = process.env.USDA_API_KEY
 
-    const url = `https://api.nal.usda.gov/fdc/v1/foods/search?query=${encodeURIComponent(food)}&api_key=${apiKey}`;
+    const url = `https://trackapi.nutritionix.com/v2/search/instant?query=${encodeURIComponent(food)}`
 
-    const response = await fetch(url)
+    const response = await fetch(url, {
+        headers: {
+            'x-app-id': process.env.NUTRITIONIX_APP_ID,
+            'x-app-key': process.env.NUTRITIONIX_API_KEY,
+        },
+    });
     const data = await response.json()
+    console.log(data);
+    
 
     res.render('search', {
-        results_for_food_searched: data.foods
+        results_for_food_searched: data.common
     })
 
 })

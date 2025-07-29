@@ -14,8 +14,8 @@
   </form>
 
   <% if(results_for_food_searched){ %>
-    <% for(let i = 0; i < 5; i++){ %>
-    <li><%= results_for_food_searched[i].description %></li>
+    <% for(let i = 0; i < 10; i++){ %>
+        <li><%= results_for_food_searched[i].food_name %> <%= results_for_food_searched[i].nf_calories %> calories for every <%= results_for_food_searched[i].serving_qty %>  <%= results_for_food_searched[i].serving_unit %></li>
     <% } %>
   <% } %>
 </body>
