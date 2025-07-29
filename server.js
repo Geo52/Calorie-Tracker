@@ -226,7 +226,7 @@ app.get('/next-day', requireAuth, (req, res) => {
     res.redirect(`/?date=${currentDate.toISOString().split('T')[0]}`)
 })
 app.get('/search', requireAuth, (req, res) => {
-    res.render('search', { food_results: 0 })
+    res.render('search', { results_for_food_searched: null })
 })
 app.post('/search', requireAuth, async (req, res) => {
     const food = req.body.food_searched_for
