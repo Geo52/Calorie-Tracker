@@ -52,7 +52,20 @@
   <a href="/search?date=<%= date %>">Add Food</a>
 
   <!-- display cals -->
-  <p>calories consumed today: <%= caloriesConsumed %> </p>
+  <p>calories consumed: <%= caloriesConsumed %> </p>
+
+  <ul>
+    <% for (let i = 0; i < calorieEntries.length; i++) { %>
+    <li>
+      <%= calorieEntries[i].total %> calories
+      <% if (calorieEntries[i].food_name) { %>
+      from <strong><%= calorieEntries[i].food_name %></strong>
+      <% } else { %>
+      (manual entry)
+      <% } %>
+    </li>
+    <% } %>
+  </ul>
 
 
 </body>

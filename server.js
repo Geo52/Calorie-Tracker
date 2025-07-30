@@ -23,7 +23,7 @@ async function initTables() {
     // await pool.query(`DROP TABLE IF EXISTS "session" CASCADE`);
     // await pool.query(`DROP TABLE IF EXISTS "user" CASCADE`);
 
-    await pool.query(`CREATE TABLE IF NOT EXISTS calories (id SERIAL PRIMARY KEY, total INTEGER NOT NULL, date_logged  DATE DEFAULT CURRENT_DATE, user_id TEXT NOT NULL)`)
+    await pool.query(`CREATE TABLE IF NOT EXISTS calories (id SERIAL PRIMARY KEY, total INTEGER NOT NULL, date_logged  DATE DEFAULT CURRENT_DATE, user_id TEXT NOT NULL, food_name TEXT)`)
 
     await pool.query(`
     CREATE TABLE IF NOT EXISTS "user" (
@@ -172,7 +172,6 @@ app.get('/', requireAuth, async (req, res) => {
     let currentDate = dateParam ? new Date(dateParam) : new Date()
     let formattedDate = currentDate.toISOString().split('T')[0]
 
-    const result = await pool.query('SELECT SUM(total) AS total FROM calories WHERE date_logged = $1 AND USER_ID = $2', [formattedDate, req.user.id])
 
     const session = await auth.api.getSession({
         headers: fromNodeHeaders(req.headers),
@@ -180,11 +179,21 @@ app.get('/', requireAuth, async (req, res) => {
 
     let name = session.user.name
     let upper = name.toUpperCase()
+    const result = await pool.query(
+        'SELECT total, food_name FROM calories WHERE date_logged = $1 AND user_id = $2 ORDER BY id ASC',
+        [formattedDate, req.user.id]
+    );
+
+
+    const totalCalories = result.rows.reduce((sum, row) => sum + row.total, 0);
+
     res.render("index.ejs", {
-        caloriesConsumed: result.rows[0]?.total || 0,
+        caloriesConsumed: totalCalories,
+        calorieEntries: result.rows, // pass entries
         date: formattedDate,
         user: upper,
-    })
+    });
+
 })
 // input/undo routes
 app.post('/add-calories', requireAuth, async (req, res) => {
@@ -267,9 +276,11 @@ app.post('/add-food', requireAuth, async (req, res) => {
     const calories = (base_calories / base_qty) * custom_qty;
 
     await pool.query(
-        `INSERT INTO calories (total, date_logged, user_id) VALUES ($1, $2, $3)`,
-        [Math.round(calories), date, req.user.id]
+        `INSERT INTO calories (total, date_logged, user_id, food_name) VALUES ($1, $2, $3, $4)`,
+        [Math.round(calories), date, req.user.id, food_name]
     );
+
+
     console.log(`Added: ${calories.toFixed(2)} cal of ${food_name} for ${date}`);
 
     // Redirect back to main or search page for that date
