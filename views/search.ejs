@@ -8,16 +8,33 @@
 </head>
 
 <body>
-  <form action="/search" method="POST">
+  <form action="/search?date=<%= date %>" method="POST">
     <input type="text" name="food_searched_for" />
+    <input type="hidden" name="date" value="<%= date %>">
     <button type="submit">search database for food</button>
   </form>
 
-  <% if(results_for_food_searched){ %>
-    <% for(let i = 0; i < 10; i++){ %>
-        <li><%= results_for_food_searched[i].food_name %> <%= results_for_food_searched[i].nf_calories %> calories for every <%= results_for_food_searched[i].serving_qty %>  <%= results_for_food_searched[i].serving_unit %></li>
-    <% } %>
-  <% } %>
+<% if (foods && foods.length) { %>
+  <% foods.slice(0, 10).forEach(food => { %>
+    <form action="/add-food" method="POST" style="margin-bottom: 1em;">
+      <input type="hidden" name="food_name" value="<%= food.food_name %>">
+      <input type="hidden" name="serving_unit" value="<%= food.serving_unit %>">
+      <input type="hidden" name="base_calories" value="<%= food.nf_calories %>">
+      <input type="hidden" name="base_qty" value="<%= food.serving_qty %>">
+      <input type="hidden" name="date" value="<%= date %>">
+
+      <label><strong><%= food.food_name %></strong></label>
+      <br>
+      <span><%= food.nf_calories %> calories per <%= food.serving_qty %> <%= food.serving_unit %></span><br>
+
+      <label>Custom serving amount:</label>
+      <input type="number" name="custom_qty" value="<%= food.serving_qty %>" min="0.1" step="0.1" required>
+      
+      <button type="submit">Add to Log</button>
+    </form>
+  <% }) %>
+<% } %>
+
 </body>
 
 </html>

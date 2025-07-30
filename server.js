@@ -226,10 +226,13 @@ app.get('/next-day', requireAuth, (req, res) => {
     res.redirect(`/?date=${currentDate.toISOString().split('T')[0]}`)
 })
 app.get('/search', requireAuth, (req, res) => {
-    res.render('search', { results_for_food_searched: null })
+    res.render('search', { results_for_food_searched: null, foods: null, date: req.query.date })
 })
 app.post('/search', requireAuth, async (req, res) => {
     const food = req.body.food_searched_for
+    const date = req.body.date
+    console.log(date);
+
 
     const url = `https://trackapi.nutritionix.com/v2/search/instant?query=${encodeURIComponent(food)}`
 
@@ -240,14 +243,38 @@ app.post('/search', requireAuth, async (req, res) => {
         },
     });
     const data = await response.json()
-    console.log(data);
-    
+    // console.log(data);
+
 
     res.render('search', {
-        results_for_food_searched: data.common
+        foods: data.common,
+        date: date
     })
 
 })
+
+app.post('/add-food', requireAuth, async (req, res) => {
+    const {
+        food_name,
+        serving_unit,
+        base_calories,
+        base_qty,
+        custom_qty,
+        date
+    } = req.body;
+
+    // Calculate actual calories
+    const calories = (base_calories / base_qty) * custom_qty;
+
+    await pool.query(
+        `INSERT INTO calories (total, date_logged, user_id) VALUES ($1, $2, $3)`,
+        [Math.round(calories), date, req.user.id]
+    );
+    console.log(`Added: ${calories.toFixed(2)} cal of ${food_name} for ${date}`);
+
+    // Redirect back to main or search page for that date
+    res.redirect(`/?date=${encodeURIComponent(date)}`);
+});
 
 // connection
 const port = process.env.PORT || 3000
