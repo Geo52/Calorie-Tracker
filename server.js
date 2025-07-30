@@ -17,11 +17,11 @@ app.all("/api/auth/{*any}", toNodeHandler(auth));
 
 
 async function initTables() {
-    // await pool.query(`DROP TABLE IF EXISTS calories CASCADE`);
-    // await pool.query(`DROP TABLE IF EXISTS "account" CASCADE`);
-    // await pool.query(`DROP TABLE IF EXISTS "verification" CASCADE`);
-    // await pool.query(`DROP TABLE IF EXISTS "session" CASCADE`);
-    // await pool.query(`DROP TABLE IF EXISTS "user" CASCADE`);
+    await pool.query(`DROP TABLE IF EXISTS calories CASCADE`);
+    await pool.query(`DROP TABLE IF EXISTS "account" CASCADE`);
+    await pool.query(`DROP TABLE IF EXISTS "verification" CASCADE`);
+    await pool.query(`DROP TABLE IF EXISTS "session" CASCADE`);
+    await pool.query(`DROP TABLE IF EXISTS "user" CASCADE`);
 
     await pool.query(`CREATE TABLE IF NOT EXISTS calories (id SERIAL PRIMARY KEY, total INTEGER NOT NULL, date_logged  DATE DEFAULT CURRENT_DATE, user_id TEXT NOT NULL, food_name TEXT)`)
 
