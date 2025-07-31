@@ -216,15 +216,6 @@ app.post('/add-calories', requireAuth, async (req, res) => {
     res.redirect(`/?date=${formattedDate}`)
 })
 
-app.post('/undo-calories', requireAuth, async (req, res) => {
-    let dateParam = req.body.date
-    let currentDate = dateParam ? new Date(dateParam) : new Date()
-    let formattedDate = currentDate.toISOString().split('T')[0]
-
-    await pool.query('DELETE FROM calories WHERE id = (SELECT id FROM calories WHERE date_logged = $1 AND user_id = $2 ORDER BY id DESC LIMIT 1)', [formattedDate, req.user.id])
-    res.redirect(`/?date=${formattedDate}`)
-})
-
 // day routes
 app.get('/prev-day', requireAuth, (req, res) => {
     let dateParam = req.query.date
