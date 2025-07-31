@@ -19,26 +19,39 @@
 
   <% let today = new  Date().toISOString().split('T')[0]%>
   <% if (date == today){ %>
-  <h2>Today</h2>
+  <div class="days">
+    <form action="/prev-day" method="GET">
+      <input type="hidden" name="date" value="<%= date %>">
+      <button type="submit">←</button>
+    </form>
+    <h2>Today</h2>
+    <form action="/next-day" method="get">
+      <input type="hidden" name="date" value="<%= date %>">
+      <button type="submit">→</button>
+    </form>
+  </div>
   <% }else{ %>
   <%
     let dateObj = new Date(date);
     let options = { timeZone: 'UTC',weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     let formattedDisplayDate = new Intl.DateTimeFormat('en-US', options).format(dateObj);
 %>
-  <h2><%= formattedDisplayDate %></h2>
+  <div class="days">
+    <form action="/prev-day" method="GET">
+      <input type="hidden" name="date" value="<%= date %>">
+      <button type="submit">←</button>
+    </form>
+    <h2><%= formattedDisplayDate %></h2>
+    <form action="/next-day" method="get">
+      <input type="hidden" name="date" value="<%= date %>">
+      <button type="submit">→</button>
+    </form>
+  </div>
 
   <% } %>
 
   <!-- change days -->
-  <form action="/prev-day" method="GET">
-    <input type="hidden" name="date" value="<%= date %>">
-    <button type="submit">previous day</button>
-  </form>
-  <form action="/next-day" method="get">
-    <input type="hidden" name="date" value="<%= date %>">
-    <button type="submit">Next Day</button>
-  </form>
+
 
   <form action="/search" method="get">
     <input type="hidden" name="date" value="<%= date %>">

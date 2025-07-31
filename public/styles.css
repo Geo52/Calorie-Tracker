@@ -14,3 +14,9 @@ body {
     align-items: center;
     justify-content: space-between;
 }
+
+.days{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
