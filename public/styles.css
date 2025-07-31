@@ -20,3 +20,8 @@ body {
   align-items: center;
   justify-content: space-between;
 }
+
+.delete-entry{
+  /* display: flex; */
+  display: inline;
+}
