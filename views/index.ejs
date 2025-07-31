@@ -10,7 +10,7 @@
 
 <body>
   <div class="welcome">
-    <h1>Welcome, <%= user %></h1>
+    <h2>Welcome, <%= user %></h2>
     <form action="/logout" method="POST">
       <button type="submit">Sign Out</button>
     </form>
@@ -40,7 +40,7 @@
       <input type="hidden" name="date" value="<%= date %>">
       <button type="submit">←</button>
     </form>
-    <h2><%= formattedDisplayDate %></h2>
+    <h3><%= formattedDisplayDate %></h3>
     <form action="/next-day" method="get">
       <input type="hidden" name="date" value="<%= date %>">
       <button type="submit">→</button>
