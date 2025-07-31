@@ -55,17 +55,19 @@
 
   <form action="/search" method="get">
     <input type="hidden" name="date" value="<%= date %>">
-    <button type="submit">Search for a Food </button>
+    <!-- <button type="submit">Search for a Food 🔍</button> -->
+    <button type="submit" class="search-food-button">Search for a Food 🔍</button>
+
   </form>
 
-  <p>Total: <%= caloriesConsumed %> </p>
+  <p class="total-calories">Total Calories: <%= caloriesConsumed %></p>
 
   <ul>
     <% for (let i = 0; i < calorieEntries.length; i++) { %>
     <li>
       <% if (calorieEntries[i].food_name) { %>
-        <strong><%= calorieEntries[i].food_name %></strong>
-        <%= calorieEntries[i].total %> calories
+      <strong><%= calorieEntries[i].food_name %></strong>
+      <%= calorieEntries[i].total %> calories
       <% } else { %>
       (manual entry)
       <% } %>
@@ -73,7 +75,8 @@
       <form class="delete-entry" action="/delete-entry" method="POST">
         <input type="hidden" name="entryId" value="<%= calorieEntries[i].id %>">
         <input type="hidden" name="date" value="<%= date %>">
-        <button type="submit">Delete</button>
+        <!-- <button type="submit">Delete</button> -->
+        <button type="submit" class="delete-button" title="Delete entry">×</button>
       </form>
     </li>
     <% } %>
