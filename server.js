@@ -167,7 +167,6 @@ app.post('/logout', async (req, res) => {
     res.redirect('/log-in')
 })
 
-// root route
 app.get('/', requireAuth, async (req, res) => {
     let dateParam = req.query.date
     let currentDate = dateParam ? new Date(dateParam) : new Date()
@@ -204,7 +203,6 @@ app.post('/delete-entry', requireAuth, async (req, res) => {
     res.redirect(`/?date=${encodeURIComponent(date)}`);
 });
 
-// input/undo routes
 app.post('/add-calories', requireAuth, async (req, res) => {
     const calsInputed = parseInt(req.body.calories)
     let dateParam = req.body.date
@@ -216,7 +214,6 @@ app.post('/add-calories', requireAuth, async (req, res) => {
     res.redirect(`/?date=${formattedDate}`)
 })
 
-// day routes
 app.get('/prev-day', requireAuth, (req, res) => {
     let dateParam = req.query.date
     let currentDate = dateParam ? new Date(dateParam) : new Date()
@@ -235,7 +232,6 @@ app.get('/next-day', requireAuth, (req, res) => {
     res.redirect(`/?date=${currentDate.toISOString().split('T')[0]}`)
 })
 
-// search routes
 app.get('/search', requireAuth, (req, res) => {
     res.render('search', { results_for_food_searched: null, foods: null, date: req.query.date })
 })

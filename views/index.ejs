@@ -68,7 +68,7 @@
       <strong><%= calorieEntries[i].food_name %></strong>
       <%= calorieEntries[i].total %> calories
       <% } else { %>
-      (manual entry)
+      <%= calorieEntries[i].total  %> calories (manual entry) 
       <% } %>
 
       <form class="delete-entry" action="/delete-entry" method="POST">
