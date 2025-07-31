@@ -9,6 +9,7 @@ import { toNodeHandler, fromNodeHeaders } from 'better-auth/node'
 import { APIError } from 'better-auth/api'
 // ejs
 app.set("view engine", "ejs")
+app.use(express.static('public'));
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -166,7 +167,7 @@ app.post('/logout', async (req, res) => {
     res.redirect('/log-in')
 })
 
-// route route
+// root route
 app.get('/', requireAuth, async (req, res) => {
     let dateParam = req.query.date
     let currentDate = dateParam ? new Date(dateParam) : new Date()
@@ -180,10 +181,9 @@ app.get('/', requireAuth, async (req, res) => {
     let name = session.user.name
     let upper = name.toUpperCase()
     const result = await pool.query(
-        'SELECT total, food_name FROM calories WHERE date_logged = $1 AND user_id = $2 ORDER BY id ASC',
+        'SELECT id, total, food_name FROM calories WHERE date_logged = $1 AND user_id = $2 ORDER BY id ASC',
         [formattedDate, req.user.id]
     );
-
 
     const totalCalories = result.rows.reduce((sum, row) => sum + row.total, 0);
 
@@ -195,6 +195,15 @@ app.get('/', requireAuth, async (req, res) => {
     });
 
 })
+
+app.post('/delete-entry', requireAuth, async (req, res) => {
+    const { entryId, date } = req.body;
+
+      await pool.query('DELETE FROM calories WHERE id = $1 AND user_id = $2', [entryId, req.user.id]);
+
+    res.redirect(`/?date=${encodeURIComponent(date)}`);
+});
+
 // input/undo routes
 app.post('/add-calories', requireAuth, async (req, res) => {
     const calsInputed = parseInt(req.body.calories)
@@ -234,9 +243,12 @@ app.get('/next-day', requireAuth, (req, res) => {
 
     res.redirect(`/?date=${currentDate.toISOString().split('T')[0]}`)
 })
+
+// search routes
 app.get('/search', requireAuth, (req, res) => {
     res.render('search', { results_for_food_searched: null, foods: null, date: req.query.date })
 })
+
 app.post('/search', requireAuth, async (req, res) => {
     const food = req.body.food_searched_for
     const date = req.body.date

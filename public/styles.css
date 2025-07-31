@@ -1,0 +1,16 @@
+/* Base styles */
+body {
+  font-family: sans-serif;
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1rem;
+  line-height: 1.6;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+.welcome{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}

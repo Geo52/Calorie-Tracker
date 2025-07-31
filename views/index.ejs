@@ -5,12 +5,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calorie Compass</title>
+  <link rel="stylesheet" href="/styles.css">
 </head>
 
 <body>
 
+  <div class="welcome">
+    <h1>Welcome, <%= user %></h1>
+    <form action="/logout" method="POST">
+      <button type="submit">Sign Out</button>
+    </form>
+  </div>
 
-  <h1>Welcome, <%= user %></h1>
   <% let today = new  Date().toISOString().split('T')[0]%>
   <% if (date == today){ %>
   <h2>Today</h2>
@@ -23,9 +29,6 @@
   <h2><%= formattedDisplayDate %></h2>
 
   <% } %>
-  <form action="/logout" method="POST">
-    <button type="submit">Sign Out</button>
-  </form>
 
   <!-- change days -->
   <form action="/prev-day" method="GET">
@@ -38,22 +41,17 @@
   </form>
 
   <!-- input cals -->
-  <form action="/add-calories" method="POST">
-    <input type="number" name="calories" min="0" required placeholder="enter a specific number of calories">
-    <input type="hidden" name="date" value="<%= date %>">
-    <button type="submit">Add Calories</button>
-  </form>
-
   <form action="/undo-calories" method="POST">
     <input type="hidden" name="date" value="<%= date %>">
     <button type="submit">Undo</button>
   </form>
 
-  <a href="/search?date=<%= date %>">Add Food</a>
+  <form action="/search" method="get" style="display:inline;">
+    <input type="hidden" name="date" value="<%= date %>">
+    <button type="submit">Search for a Food </button>
+  </form>
 
-  <!-- display cals -->
   <p>calories consumed: <%= caloriesConsumed %> </p>
-
   <ul>
     <% for (let i = 0; i < calorieEntries.length; i++) { %>
     <li>
@@ -63,10 +61,15 @@
       <% } else { %>
       (manual entry)
       <% } %>
+
+      <form action="/delete-entry" method="POST" style="display:inline;">
+        <input type="hidden" name="entryId" value="<%= calorieEntries[i].id %>">
+        <input type="hidden" name="date" value="<%= date %>">
+        <button type="submit">Delete</button>
+      </form>
     </li>
     <% } %>
   </ul>
-
 
 </body>
 
