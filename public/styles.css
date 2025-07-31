@@ -1,12 +1,27 @@
 body {
   font-family: sans-serif;
   max-width: 600px;
-  margin: 2rem auto;
+  margin: 0px auto;
   padding: 1rem;
   line-height: 1.6;
   background-color: #f9f9f9;
   color: #333;
 }
+
+
+.navbar {
+  display: flex;
+  align-items: center;
+  color: black;
+  flex-wrap: wrap;
+}
+
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
 
 .welcome {
   display: flex;
