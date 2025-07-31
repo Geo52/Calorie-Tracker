@@ -27,7 +27,7 @@
 
 <% if (foods && foods.length) { %>
   <% foods.slice(0, 10).forEach(food => { %>
-    <form action="/add-food" method="POST" style="margin-bottom: 1em;">
+    <form action="/add-food" method="POST">
       <input type="hidden" name="food_name" value="<%= food.food_name %>">
       <input type="hidden" name="serving_unit" value="<%= food.serving_unit %>">
       <input type="hidden" name="base_calories" value="<%= food.nf_calories %>">

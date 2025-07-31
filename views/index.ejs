@@ -40,12 +40,13 @@
     <button type="submit">Next Day</button>
   </form>
 
-  <form action="/search" method="get" style="display:inline;">
+  <form action="/search" method="get">
     <input type="hidden" name="date" value="<%= date %>">
     <button type="submit">Search for a Food </button>
   </form>
 
   <p>calories consumed: <%= caloriesConsumed %> </p>
+
   <ul>
     <% for (let i = 0; i < calorieEntries.length; i++) { %>
     <li>
@@ -56,7 +57,7 @@
       (manual entry)
       <% } %>
 
-      <form action="/delete-entry" method="POST" style="display:inline;">
+      <form action="/delete-entry" method="POST">
         <input type="hidden" name="entryId" value="<%= calorieEntries[i].id %>">
         <input type="hidden" name="date" value="<%= date %>">
         <button type="submit">Delete</button>
